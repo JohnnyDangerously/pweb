@@ -2,7 +2,7 @@ from flask import Flask
 app = Flask(__name__)
 
 @app.route("/")
-def flasky():
+def pweb():
     return "go home max this is another test"
 
 if __name__ == "__main__":

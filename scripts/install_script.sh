@@ -7,21 +7,21 @@ yum install -y nginx build-essential python-dev
 pip install flask
 pip install uwsgi
 sudo mkdir /var/www
-sudo mkdir /var/www/demoapp
-sudo mkdir /var/www/demoapp/static
+sudo mkdir /var/www/pweb
+#sudo mkdir /var/www/pweb/static
 
-sudo chown -R ubuntu:ubuntu /var/www/demoapp/
-rm rm /etc/nginx/sites-enabled/default
+sudo chown -R ubuntu:ubuntu /var/www/pweb/
+rm /etc/nginx/sites-enabled/default
 
 echo "from flask import Flask
 app = Flask(__name__)
 
 @app.route("/")
 def hello():
-    return "Hello World!"
+    return "Hello Max!"
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=8080)" >  /var/www/demoapp/flasky.py
+    app.run(host='0.0.0.0', port=8080)" >  /var/www/pweb/pweb.py
 
 echo "server {
     listen      80;
@@ -32,26 +32,29 @@ echo "server {
     location / { try_files $uri @yourapplication; }
     location @yourapplication {
         include uwsgi_params;
-        uwsgi_pass unix:/var/www/demoapp/demoapp_uwsgi.sock;
+        uwsgi_pass unix:/var/www/pweb/pweb_uwsgi.sock;
     }
-})" >  /var/www/demoapp/demoapp_nginx.conf
+    location /static {
+        root /var/www/pweb/;
+    }
+}" >  /var/www/pweb/pweb_nginx.conf
 
-sudo ln -s /var/www/demoapp/demoapp_nginx.conf /etc/nginx/conf.d/
+sudo ln -s /var/www/pweb/pweb_nginx.conf /etc/nginx/conf.d/
 sudo /etc/init.d/nginx restart
 
 echo "[uwsgi]
 #application's base folder
-base = /var/www/demoapp
+base = /var/www/pweb
 
 #python module to import
-app = flasky
+app = pweb
 module = %(app)
 
 #home = %(base)/venv
 pythonpath = %(base)
 
 #socket file's location
-socket = /var/www/demoapp/%n.sock
+socket = /var/www/pweb/%n.sock
 
 #permissions for the socket file
 chmod-socket    = 644
@@ -60,7 +63,7 @@ chmod-socket    = 644
 callable = app
 
 #location of log files
-logto = /var/log/uwsgi/%n.log" >  /var/www/demoapp/demoapp_uwsgi.ini
+logto = /var/log/uwsgi/%n.log" >  /var/www/pweb/pweb_uwsgi.ini
 
 sudo mkdir -p /var/log/uwsgi
 sudo chown -R ubuntu:ubuntu /var/log/uwsgi
@@ -76,8 +79,8 @@ env LOGTO=/var/log/uwsgi/emperor.log
 exec $UWSGI --master --emperor /etc/uwsgi/vassals --die-on-term --uid www-data --gid www-data --logto $LOGTO" >  /etc/init/uwsgi.conf
 
 sudo mkdir /etc/uwsgi && sudo mkdir /etc/uwsgi/vassals
-sudo ln -s /var/www/demoapp/demoapp_uwsgi.ini /etc/uwsgi/vassals
-sudo chown -R www-data:www-data /var/www/demoapp/
+sudo ln -s /var/www/pweb/pweb_uwsgi.ini /etc/uwsgi/vassals
+sudo chown -R www-data:www-data /var/www/pweb/
 sudo chown -R www-data:www-data /var/log/uwsgi/
 
 sudo start usgi
