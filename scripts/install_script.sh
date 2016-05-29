@@ -16,11 +16,11 @@ rm /etc/nginx/sites-enabled/default
 echo "from flask import Flask
 app = Flask(__name__)
 
-@app.route("/")
+@app.route(\"/\")
 def hello():
-    return "Hello Max!"
+    return \"Hello Max!\"
 
-if __name__ == "__main__":
+if __name__ == \"__main__\":
     app.run(host='0.0.0.0', port=8080)" >  /var/www/pweb/pweb.py
 
 echo "server {
@@ -29,7 +29,7 @@ echo "server {
     charset     utf-8;
     client_max_body_size 75M;
 
-    location / { try_files $uri @yourapplication; }
+    location / { try_files \$uri @yourapplication; }
     location @yourapplication {
         include uwsgi_params;
         uwsgi_pass unix:/var/www/pweb/pweb_uwsgi.sock;
