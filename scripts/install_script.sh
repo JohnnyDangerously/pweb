@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
 sudo add-apt-repository -y ppa:nginx/stable
-yum update -y
-yum upgrade -y
-yum install -y nginx build-essential python-dev
+apt-get update -y
+apt-get upgrade -y
+apt-get install -y nginx build-essential python-dev
 pip install flask
 pip install uwsgi
 sudo mkdir /var/www
