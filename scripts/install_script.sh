@@ -83,5 +83,5 @@ sudo ln -s /var/www/pweb/pweb_uwsgi.ini /etc/uwsgi/vassals
 sudo chown -R www-data:www-data /var/www/pweb/
 sudo chown -R www-data:www-data /var/log/uwsgi/
 
-sudo start usgi
+sudo start uwsgi
 sudo start nginx
