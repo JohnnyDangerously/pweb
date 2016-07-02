@@ -1,4 +1,4 @@
 #ignore binary
 *.pyc
 .DS_Store
-.idea/*
+.idea
