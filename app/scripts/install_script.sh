@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
 
- add-apt-repository -y ppa:nginx/stable
+add-apt-repository -y ppa:nginx/stable
 apt-get update -y
 apt-get upgrade -y
 apt-get install -y nginx build-essential python-dev
 pip install flask
 pip install uwsgi
- mkdir /var/www
- mkdir /var/www/pweb
+mkdir /var/www
+mkdir /var/www/pweb
 # mkdir /var/www/pweb/static
 
- chown -R ubuntu:ubuntu /var/www/pweb/
+chown -R ubuntu:ubuntu /var/www/pweb/
 rm /etc/nginx/sites-enabled/default
 
 echo "from flask import Flask
@@ -39,8 +39,8 @@ echo "server {
     }
 }" >  /var/www/pweb/pweb_nginx.conf
 
- ln -s /var/www/pweb/pweb_nginx.conf /etc/nginx/conf.d/
- /etc/init.d/nginx restart
+ln -s /var/www/pweb/pweb_nginx.conf /etc/nginx/conf.d/
+/etc/init.d/nginx restart
 
 echo "[uwsgi]
 #application's base folder
@@ -65,8 +65,8 @@ callable = app
 #location of log files
 logto = /var/log/uwsgi/%n.log" >  /var/www/pweb/pweb_uwsgi.ini
 
- mkdir -p /var/log/uwsgi
- chown -R ubuntu:ubuntu /var/log/uwsgi
+mkdir -p /var/log/uwsgi
+chown -R ubuntu:ubuntu /var/log/uwsgi
 
 echo "description "uWSGI"
 start on runlevel [2345]
@@ -78,10 +78,10 @@ env LOGTO=/var/log/uwsgi/emperor.log
 
 exec $UWSGI --master --emperor /etc/uwsgi/vassals --die-on-term --uid www-data --gid www-data --logto $LOGTO" >  /etc/init/uwsgi.conf
 
- mkdir /etc/uwsgi &&  mkdir /etc/uwsgi/vassals
- ln -s /var/www/pweb/pweb_uwsgi.ini /etc/uwsgi/vassals
- chown -R www-data:www-data /var/www/pweb/
- chown -R www-data:www-data /var/log/uwsgi/
+mkdir /etc/uwsgi &&  mkdir /etc/uwsgi/vassals
+ln -s /var/www/pweb/pweb_uwsgi.ini /etc/uwsgi/vassals
+chown -R www-data:www-data /var/www/pweb/
+chown -R www-data:www-data /var/log/uwsgi/
 
- start uwsgi
- start nginx
+start uwsgi
+start nginx
